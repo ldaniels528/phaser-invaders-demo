@@ -1,0 +1,20 @@
+{
+  "name": "scalajs-invaders",
+  "homepage": "https://github.com/adrobisch/scalajs-invaders",
+  "authors": [
+    "Lawrence Daniels <lawrence.daniels@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "phaser": "^2.5.0"
+  }
+}
