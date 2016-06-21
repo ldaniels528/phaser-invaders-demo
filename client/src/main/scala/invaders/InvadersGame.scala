@@ -1,6 +1,7 @@
 package invaders
 
-import org.scalajs.nodejs.phaser._
+import org.scalajs.browser.phaser._
+import org.scalajs.browser.phaser.Phaser._
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportAll
@@ -14,7 +15,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   var cursors: CursorKeys = _
   var fireButton: Key = _
   var explosions: Group[Sprite] = _
-  var starfield: TileSprite = _
+  var starField: TileSprite = _
   var score: Int = _
   val scoreString = "Score : "
   var scoreText: Text = _
@@ -22,7 +23,6 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   var enemyBullets: Group[Sprite] = _
   var firingTimer: Double = _
   var stateText: Text = _
-  var livingEnemies: js.Array[Sprite] = js.Array()
 
   override def preload() = {
     game.load.image("bullet", "assets/bullet.png")
@@ -30,7 +30,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     game.load.spritesheet("invader", "assets/invader32x32x4.png", 32, 32)
     game.load.image("ship", "assets/player.png")
     game.load.spritesheet("kaboom", "assets/explode.png", 128, 128)
-    game.load.image("starfield", "assets/starfield.png")
+    game.load.image("starField", "assets/starField.png")
     game.load.image("background", "assets/background2.png")
   }
 
@@ -38,7 +38,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     game.physics.startSystem(Phaser.Physics.ARCADE)
 
     //  The scrolling star field background
-    starfield = game.add.tileSprite(0, 0, 800, 600, "starfield")
+    starField = game.add.tileSprite(0, 0, 800, 600, "starField")
 
     //  Our bullet group
     bullets = game.add.group()
@@ -84,8 +84,8 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     stateText.anchor.setTo(0.5, 0.5)
     stateText.visible = false
 
-    for (i <- 0 to 2) {
-      val ship = lives.create(game.world.width - 100 + (30 * i), 60, "ship")
+    for (n <- 0 to 2) {
+      val ship = lives.create(game.world.width - 100 + (30 * n), 60, "ship")
       ship.anchor.setTo(0.5, 0.5)
       ship.angle = 90
       ship.alpha = 0.4
@@ -140,27 +140,21 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
 
   override def update() = {
     //  Scroll the background
-    starfield.tilePosition.y += 2
+    starField.tilePosition.y += 2
 
     if (player.alive) {
       //  Reset the player, then check for movement keys
       player.body.velocity.setTo(0, 0)
 
-      if (cursors.left.isDown) {
-        player.body.velocity.x = -200
-      }
-      else if (cursors.right.isDown) {
-        player.body.velocity.x = 200
-      }
+      if (cursors.left.isDown) player.body.velocity.x = -200
+      else if (cursors.right.isDown) player.body.velocity.x = 200
 
-      //  Firing?
-      if (fireButton.isDown) {
-        fireBullet()
-      }
+      // is the player firing?
+      if (fireButton.isDown) fireBullet()
 
-      if (game.time.now > firingTimer) {
-        enemyFires()
-      }
+      // should the enemy fire?
+      if (game.time.now > firingTimer) enemyFires()
+
       //  Run collision
       game.physics.arcade.overlap(bullets, aliens, collisionHandler, processCallback = null, callbackContext = this)
       game.physics.arcade.overlap(enemyBullets, player, enemyHitsPlayer, processCallback = null, callbackContext = this)
@@ -168,29 +162,27 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   }
 
   def enemyHitsPlayer = { (player: Sprite, bullet: Sprite) =>
-
+    // kill the bullet
     bullet.kill()
 
-    val live = lives.getFirstAlive()
+    // kill the enemy
+    lives.getFirstAlive() foreach (_.kill())
 
-    if (live.isDefined) {
-      live.get.kill()
+    // and create an explosion
+    explosions.getFirstExists(false) foreach { explosion =>
+      explosion.reset(player.body.x, player.body.y)
+      explosion.play("kaboom", 30, loop = false, killOnComplete = true)
     }
-
-    //  And create an explosion :)
-    val explosion = explosions.getFirstExists(false)
-    explosion.get.reset(player.body.x, player.body.y)
-    explosion.get.play("kaboom", 30, loop = false, killOnComplete = true)
 
     // When the player dies
     if (lives.countLiving() < 1) {
       player.kill()
-      enemyBullets.forEach({ bullet: Sprite => bullet.kill() })
+      enemyBullets.foreach(_.kill())
 
       stateText.text = " GAME OVER \n Click to restart"
       stateText.visible = true
 
-      //the "click to restart" handler
+      // the "click to restart" handler
       game.input.onTap.addOnce(restart)
     }
   }
@@ -206,17 +198,16 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     scoreText.text = scoreString + score
 
     //  And create an explosion :)
-    val explosion = explosions.getFirstExists(false)
-    explosion.get.reset(alien.body.x, alien.body.y)
-    explosion.get.play("kaboom", 30, loop = false, killOnComplete = true)
+    explosions.getFirstExists(false) foreach { explosion =>
+      explosion.reset(alien.body.x, alien.body.y)
+      explosion.play("kaboom", 30, loop = false, killOnComplete = true)
+    }
 
     if (aliens.countLiving() == 0) {
       score += 1000
       scoreText.text = scoreString + score
 
-      enemyBullets.forEach { sprite: Sprite =>
-        sprite.kill()
-      }
+      enemyBullets.foreach(_.kill())
 
       stateText.text = " You Won, \n Click to restart"
       stateText.visible = true
@@ -226,17 +217,18 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   }
 
   def restart = { context: Any =>
-    //  A new level starts
+    // A new level starts
+    // resets the life count
+    lives.foreach(_.revive())
 
-    //resets the life count
-    lives.forEach { live: Sprite => live.revive() }
-    //  And brings the aliens back from the dead :)
+    // and brings the aliens back from the dead :)
     aliens.removeAll()
     createAliens()
 
-    //revives the player
+    // revives the player
     player.revive()
-    //hides the text
+
+    // hides the text
     stateText.visible = false
   }
 
@@ -254,27 +246,21 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   }
 
   def enemyFires() = {
-    //  Grab the first bullet we can from the pool
-    val enemyBullet = enemyBullets.getFirstExists(false)
+    // grab the first bullet we can from the pool
+    enemyBullets.getFirstExists(false) foreach { enemyBullet =>
 
-    livingEnemies = js.Array()
-    aliens.forEachAlive { alien: Sprite =>
-      livingEnemies :+= alien
-    }
+      val livingEnemies = aliens.findAlive()
+      if (livingEnemies.nonEmpty) {
+        // randomly select one of them
+        val random = game.rnd.integerInRange(0, livingEnemies.length - 1)
+        val shooter = livingEnemies(random)
 
-    if (enemyBullet.isDefined && livingEnemies.nonEmpty) {
-      // randomly select one of them
-      val random = game.rnd.integerInRange(0, livingEnemies.length - 1)
-      val shooter = livingEnemies(random)
-
-      // And fire the bullet from this enemy
-      enemyBullet foreach { bullet =>
-        bullet.reset(shooter.body.x, shooter.body.y)
-        game.physics.arcade.moveToObject(bullet, player, 120)
+        // And fire the bullet from this enemy
+        enemyBullet.reset(shooter.body.x, shooter.body.y)
+        game.physics.arcade.moveToObject(enemyBullet, player, 120)
         firingTimer = game.time.now + 2000
       }
     }
-
   }
 
   override def render(): Unit = {}
