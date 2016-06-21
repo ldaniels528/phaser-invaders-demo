@@ -37,7 +37,10 @@ lazy val view = (project in file("client"))
   .enablePlugins(ScalaJSPlugin)
   .settings(jsCommonSettings: _*)
   .settings(
-    name := "invaders-client"
+    name := "invaders-client",
+    libraryDependencies ++= Seq(
+      "com.github.ldaniels528" %%% "scalajs-common-browser" % meanjsVersion
+    )
   )
 
 lazy val nodejs = (project in file("server"))

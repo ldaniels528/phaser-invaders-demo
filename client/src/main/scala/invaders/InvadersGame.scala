@@ -1,6 +1,5 @@
 package invaders
 
-import org.scalajs.nodejs.phaser.Phaser._
 import org.scalajs.nodejs.phaser._
 
 import scala.collection.mutable
@@ -14,9 +13,9 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   var bullets: Group[Sprite] = _
   var bulletTime: Double = _
   var cursors: CursorKeys = _
-  var fireButton: Phaser.Key = _
+  var fireButton: Key = _
   var explosions: Group[Sprite] = _
-  var starField: TileSprite = _
+  var starfield: TileSprite = null
   var score: Int = _
   var scoreString = ""
   var scoreText: Text = _
@@ -39,8 +38,8 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   override def create() = {
     game.physics.startSystem(Phaser.Physics.ARCADE)
 
-    //  The scrolling starfield background
-    starField = game.add.tileSprite(0, 0, 800, 600, "starfield")
+    //  The scrolling star field background
+    starfield = game.add.tileSprite(0, 0, 800, 600, "starfield")
 
     //  Our bullet group
     bullets = game.add.group()
@@ -121,9 +120,9 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
 
     //  All this does is basically start the invaders moving. Notice we're moving the Group they belong to, rather than the invaders directly.
     val tween = game.add.tween(aliens).to(
-      js.Dictionary("x" -> 200),
+      properties = js.Dictionary("x" -> 200),
       duration = 2000,
-      Phaser.Easing.Linear.None,
+      ease = Phaser.Easing.Linear.None,
       autoStart = true, delay = 0, repeat = 1000, yoyo = true
     )
 
@@ -143,7 +142,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
 
   override def update() = {
     //  Scroll the background
-    starField.tilePosition.y += 2
+    starfield.tilePosition.y += 2
 
     if (player.alive) {
       //  Reset the player, then check for movement keys

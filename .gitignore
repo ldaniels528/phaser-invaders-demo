@@ -17,3 +17,6 @@ project/plugins/project/
 .worksheet
 server/bower_components
 server/node_modules
+server/public/javascripts/invaders-client-fastopt.js
+server/public/javascripts/invaders-client-fastopt.js.map
+server/public/javascripts/invaders-client-launcher.js

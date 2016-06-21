@@ -1,11 +1,11 @@
 package invaders
 
+import org.scalajs.nodejs.{Bootstrap, console}
 import org.scalajs.nodejs.bodyparser.{BodyParser, UrlEncodedBodyOptions}
 import org.scalajs.nodejs.express.fileupload.ExpressFileUpload
 import org.scalajs.nodejs.express.{Express, Request, Response}
 import org.scalajs.nodejs.expressws.{ExpressWS, WsRouterExtensions}
 import org.scalajs.nodejs.global.process
-import org.scalajs.nodejs.{Bootstrap, console}
 
 import scala.scalajs.js
 import scala.scalajs.js.JSApp

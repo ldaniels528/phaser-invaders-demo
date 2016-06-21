@@ -8,12 +8,12 @@ import scala.scalajs.js.annotation.JSName
   * @version 2.5.0
   * @author lawrence.daniels@gmail.com
   */
-@JSName("PIXI")
 @js.native
+@JSName("PIXI")
 object PIXI extends js.Object {
 
-  @JSName("Point")
   @js.native
+  @JSName("Point")
   trait Point extends js.Object {
     var x: Double = js.native
     var y: Double = js.native
@@ -21,8 +21,8 @@ object PIXI extends js.Object {
     def setTo(x: Double, y: Double): Point = js.native
   }
 
-  @JSName("DisplayObject")
   @js.native
+  @JSName("DisplayObject")
   trait DisplayObject extends js.Object {
     var x: Double = js.native
     var y: Double = js.native
@@ -34,8 +34,8 @@ object PIXI extends js.Object {
     val anchor: Point = js.native
   }
 
-  @JSName("DisplayObjectContainer")
   @js.native
+  @JSName("DisplayObjectContainer")
   trait DisplayObjectContainer extends DisplayObject
 
 }
