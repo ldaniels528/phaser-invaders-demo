@@ -16,7 +16,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   var explosions: Group[Sprite] = _
   var starfield: TileSprite = _
   var score: Int = _
-  var scoreString = ""
+  val scoreString = "Score : "
   var scoreText: Text = _
   var lives: Group[Sprite] = _
   var enemyBullets: Group[Sprite] = _
@@ -73,7 +73,6 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     createAliens()
 
     //  The score
-    scoreString = "Score : "
     scoreText = game.add.text(10, 10, scoreString + score, js.Dictionary("font" -> "34px Arial", "fill" -> "#fff"))
 
     //  Lives
