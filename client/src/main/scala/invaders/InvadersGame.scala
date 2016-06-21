@@ -2,7 +2,6 @@ package invaders
 
 import org.scalajs.nodejs.phaser._
 
-import scala.collection.mutable
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportAll
 
@@ -23,7 +22,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   var enemyBullets: Group[Sprite] = _
   var firingTimer: Double = _
   var stateText: Text = _
-  var livingEnemies: mutable.Seq[Sprite] = mutable.Seq()
+  var livingEnemies: js.Array[Sprite] = js.Array()
 
   override def preload() = {
     game.load.image("bullet", "assets/bullet.png")
@@ -259,7 +258,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     //  Grab the first bullet we can from the pool
     val enemyBullet = enemyBullets.getFirstExists(false)
 
-    livingEnemies = mutable.Seq()
+    livingEnemies = js.Array()
     aliens.forEachAlive { alien: Sprite =>
       livingEnemies :+= alien
     }
