@@ -4,7 +4,7 @@ import sbt.Keys._
 import sbt._
 
 val appVersion = "0.1.0"
-val meanjsVersion = "0.2.0"
+val meanjsVersion = "0.2.1"
 
 val _scalaVersion = "2.11.8"
 val paradisePluginVersion = "3.0.0-M1"
@@ -39,7 +39,8 @@ lazy val view = (project in file("client"))
   .settings(
     name := "invaders-client",
     libraryDependencies ++= Seq(
-      "com.github.ldaniels528" %%% "scalajs-common-browser" % meanjsVersion
+      "com.github.ldaniels528" %%% "scalajs-common-browser" % meanjsVersion,
+      "com.github.ldaniels528" %%% "scalajs-nodejs-phaser" % meanjsVersion
     )
   )
 

@@ -15,7 +15,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   var cursors: CursorKeys = _
   var fireButton: Key = _
   var explosions: Group[Sprite] = _
-  var starfield: TileSprite = null
+  var starfield: TileSprite = _
   var score: Int = _
   var scoreString = ""
   var scoreText: Text = _
