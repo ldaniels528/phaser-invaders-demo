@@ -6,4 +6,4 @@ This project is a port of [scalajs-invaders](https://github.com/adrobisch/scalaj
 [Scala.js](http://scala-js.org) port of the [invaders example](http://phaser.io/examples/v2/games/invaders) from the 
 [Phaser.js](http://phaser.io/) documentation. 
 
-<img src="https://github.com/ldaniels528/scalajs-invaders/blob/feature/test/Invaders.png">
+<img src="https://github.com/ldaniels528/scalajs-invaders/blob/master/Invaders.png">
