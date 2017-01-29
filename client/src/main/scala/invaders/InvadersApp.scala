@@ -1,17 +1,18 @@
 package invaders
 
-import org.scalajs.browser.phaser.Phaser
-import org.scalajs.dom.browser.{console, performance}
+import io.scalajs.dom.html.phaser.Phaser
+import io.scalajs.dom.html.phaser.Game
 
 import scala.scalajs.js.JSApp
 
 /**
-  * Invaders Client App
+  * Invaders Client Application
+  * @author lawrence.daniels@gmail.com
   */
 object InvadersApp extends JSApp {
 
   override def main(): Unit = {
-    val game = new Phaser.Game(800, 600, Phaser.AUTO, "invaders-game")
+    val game = new Game(800, 600, Phaser.AUTO, "invaders-game")
     game.state.add("initial", new InvadersGame(game))
     game.state.start("initial")
   }

@@ -20,3 +20,6 @@ server/node_modules
 server/public/javascripts/invaders-client-fastopt.js
 server/public/javascripts/invaders-client-fastopt.js.map
 server/public/javascripts/invaders-client-launcher.js
+scalajs-invaders-client-fastopt.js
+scalajs-invaders-client-fastopt.js.map
+scalajs-invaders-client-launcher.js

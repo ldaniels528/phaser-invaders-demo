@@ -1,13 +1,17 @@
 package invaders
 
-import org.scalajs.browser.phaser._
-import org.scalajs.browser.phaser.Phaser._
+import io.scalajs.dom.html.phaser._
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportAll
 
+/**
+  * Invaders Game State Controller
+  * @param game the given [[Game game]] instance
+  * @author lawrence.daniels@gmail.com
+  */
 @JSExportAll
-class InvadersGame(val game: Phaser.Game) extends GameState {
+class InvadersGame(val game: Game) extends GameState {
   var player: Sprite = _
   var aliens: Group[Sprite] = _
   var bullets: Group[Sprite] = _
@@ -24,7 +28,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
   var firingTimer: Double = _
   var stateText: Text = _
 
-  override def preload() = {
+  override def preload() {
     game.load.image("bullet", "assets/bullet.png")
     game.load.image("enemyBullet", "assets/enemy-bullet.png")
     game.load.spritesheet("invader", "assets/invader32x32x4.png", 32, 32)
@@ -34,8 +38,8 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     game.load.image("background", "assets/background2.png")
   }
 
-  override def create() = {
-    game.physics.startSystem(Phaser.Physics.ARCADE)
+  override def create() {
+    game.physics.startSystem(Physics.ARCADE)
 
     //  The scrolling star field background
     starField = game.add.tileSprite(0, 0, 800, 600, "starField")
@@ -43,7 +47,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     //  Our bullet group
     bullets = game.add.group()
     bullets.enableBody = true
-    bullets.physicsBodyType = Phaser.Physics.ARCADE
+    bullets.physicsBodyType = Physics.ARCADE
     bullets.createMultiple(30, "bullet")
     bullets.setAll("anchor.x", 0.5)
     bullets.setAll("anchor.y", 1)
@@ -53,7 +57,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     // The enemy's bullets
     enemyBullets = game.add.group()
     enemyBullets.enableBody = true
-    enemyBullets.physicsBodyType = Phaser.Physics.ARCADE
+    enemyBullets.physicsBodyType = Physics.ARCADE
     enemyBullets.createMultiple(30, "enemyBullet")
     enemyBullets.setAll("anchor.x", 0.5)
     enemyBullets.setAll("anchor.y", 1)
@@ -63,12 +67,12 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     //  The hero!
     player = game.add.sprite(400, 500, "ship")
     player.anchor.setTo(0.5, 0.5)
-    game.physics.enable(player, Phaser.Physics.ARCADE)
+    game.physics.enable(player, Physics.ARCADE)
 
     //  The baddies!
     aliens = game.add.group()
     aliens.enableBody = true
-    aliens.physicsBodyType = Phaser.Physics.ARCADE
+    aliens.physicsBodyType = Physics.ARCADE
 
     createAliens()
 
@@ -98,10 +102,10 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
 
     //  And some controls to play the game with
     cursors = game.input.keyboard.createCursorKeys()
-    fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+    fireButton = game.input.keyboard.addKey(Keyboard.SPACEBAR)
   }
 
-  def createAliens() = {
+  def createAliens() {
     for {
       y <- 0 to 3
       x <- 0 to 9
@@ -120,7 +124,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     val tween = game.add.tween(aliens).to(
       properties = js.Dictionary("x" -> 200),
       duration = 2000,
-      ease = Phaser.Easing.Linear.None,
+      ease = Easing.Linear.None,
       autoStart = true, delay = 0, repeat = 1000, yoyo = true
     )
 
@@ -132,13 +136,13 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     aliens.y += 10
   }
 
-  def setupInvader = { invader: Sprite =>
+  def setupInvader(invader: Sprite) {
     invader.anchor.x = 0.5
     invader.anchor.y = 0.5
     invader.animations.add("kaboom")
   }
 
-  override def update() = {
+  override def update() {
     //  Scroll the background
     starField.tilePosition.y += 2
 
@@ -161,7 +165,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     }
   }
 
-  def enemyHitsPlayer = { (player: Sprite, bullet: Sprite) =>
+  def enemyHitsPlayer(player: Sprite, bullet: Sprite) {
     // kill the bullet
     bullet.kill()
 
@@ -187,7 +191,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     }
   }
 
-  def collisionHandler = { (bullet: Sprite, alien: Sprite) =>
+  def collisionHandler(bullet: Sprite, alien: Sprite) {
 
     //  When a bullet hits an alien we kill them both
     bullet.kill()
@@ -216,7 +220,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     }
   }
 
-  def restart = { context: Any =>
+  def restart(context: Any) {
     // A new level starts
     // resets the life count
     lives.foreach(_.revive())
@@ -232,7 +236,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     stateText.visible = false
   }
 
-  def fireBullet() = {
+  def fireBullet() {
     //  To avoid them being allowed to fire too fast we set a time limit
     if (game.time.now > bulletTime) {
       //  Grab the first bullet we can from the pool
@@ -245,7 +249,7 @@ class InvadersGame(val game: Phaser.Game) extends GameState {
     }
   }
 
-  def enemyFires() = {
+  def enemyFires() {
     // grab the first bullet we can from the pool
     enemyBullets.getFirstExists(false) foreach { enemyBullet =>
 

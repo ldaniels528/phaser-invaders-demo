@@ -3,61 +3,57 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 
-val appVersion = "0.1.0"
-val meanjsVersion = "0.2.2"
-val _scalaVersion = "2.11.8"
-val paradisePluginVersion = "3.0.0-M1"
+val appVersion = "0.1.1"
+val scalaJsVersion = "2.12.1"
+val scalaJsIOVersion = "0.3.0.1"
 
 val jsCommonSettings = Seq(
   organization := "com.github.ldaniels528",
   version := appVersion,
-  scalaVersion := _scalaVersion,
+  scalaVersion := scalaJsVersion,
   scalacOptions ++= Seq("-feature", "-deprecation"),
   scalacOptions in(Compile, doc) ++= Seq(
     "-no-link-warnings" // Suppresses problems with Scaladoc @throws links
   ),
   relativeSourceMaps := true,
-  persistLauncher := true,
-  persistLauncher in Test := false,
   homepage := Some(url("https://github.com/ldaniels528/invaders")),
-  addCompilerPlugin("org.scalamacros" % "paradise" % paradisePluginVersion cross CrossVersion.full),
   libraryDependencies ++= Seq(
-    "org.scala-lang" % "scala-reflect" % _scalaVersion
-  )
-)
+    "org.scala-lang" % "scala-reflect" % scalaJsVersion
+  ))
 
-lazy val root = (project in file("."))
-  .aggregate(browser, nodejs)
-  .settings(
-    name := "invaders"
-  )
-
-lazy val browser = (project in file("client"))
+lazy val client = (project in file("client"))
   .enablePlugins(ScalaJSPlugin)
   .settings(jsCommonSettings: _*)
   .settings(
-    name := "invaders-client",
+    name := "scalajs-invaders-client",
+    persistLauncher := true,
+    persistLauncher in Test := false,
     libraryDependencies ++= Seq(
-      "com.github.ldaniels528" %%% "scalajs-browser-common" % meanjsVersion//,
-      //"com.github.ldaniels528" %%% "scalajs-browser-phaser" % meanjsVersion
-    )
-  )
+      "io.scalajs" %%% "dom" % scalaJsIOVersion,
+      "io.scalajs" %%% "pixijs" % scalaJsIOVersion,
+      "io.scalajs" %%% "phaser" % scalaJsIOVersion
+    ))
 
-lazy val nodejs = (project in file("server"))
-  .aggregate(browser)
-  .dependsOn(browser)
+lazy val server = (project in file("."))
+  .aggregate(client)
+  .dependsOn(client)
   .enablePlugins(ScalaJSPlugin)
   .settings(jsCommonSettings: _*)
   .settings(
-    name := "invaders-server",
-    //pipelineStages := Seq(gzip, scalaJSProd),
+    name := "scalajs-invaders",
+    autoCompilerPlugins := true,
+    scalaJSModuleKind := ModuleKind.CommonJSModule,
     Seq(packageScalaJSLauncher, fastOptJS, fullOptJS) map { packageJSKey =>
-      crossTarget in(browser, Compile, packageJSKey) := baseDirectory.value / "public" / "javascripts"
+      crossTarget in(client, Compile, packageJSKey) := baseDirectory.value / "public" / "javascripts"
     },
     compile in Compile <<=
-      (compile in Compile) dependsOn (fastOptJS in(browser, Compile)),
+      (compile in Compile) dependsOn (fastOptJS in(client, Compile)),
     ivyScala := ivyScala.value map (_.copy(overrideScalaVersion = true)),
     libraryDependencies ++= Seq(
-      "com.github.ldaniels528" %%% "scalajs-nodejs-mean-bundle-minimal" % meanjsVersion
-    )
-  )
+      "io.scalajs" %%% "nodejs" % scalaJsIOVersion,
+      "io.scalajs.npm" %%% "express" % scalaJsIOVersion,
+      "io.scalajs.npm" %%% "body-parser" % scalaJsIOVersion
+    ))
+
+// loads the Scalajs-io root project at sbt startup
+onLoad in Global := (Command.process("project server", _: State)) compose (onLoad in Global).value
