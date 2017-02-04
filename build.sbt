@@ -5,7 +5,7 @@ import sbt._
 
 val appVersion = "0.1.1"
 val scalaJsVersion = "2.12.1"
-val scalaJsIOVersion = "0.3.0.1"
+val scalaJsIOVersion = "0.3.0.3"
 
 val jsCommonSettings = Seq(
   organization := "com.github.ldaniels528",

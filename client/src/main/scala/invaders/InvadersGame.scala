@@ -112,7 +112,7 @@ class InvadersGame(val game: Game) extends GameState {
     } {
       val alien = aliens.create(x * 48, y * 50, "invader")
       alien.anchor.setTo(0.5, 0.5)
-      alien.animations.add("fly", js.Array(0, 1, 2, 3), 20, true)
+      alien.animations.add("fly", js.Array(0, 1, 2, 3), 20, loop = true)
       alien.play("fly")
       // alien.body.moves = false
     }
