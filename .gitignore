@@ -23,3 +23,6 @@ server/public/javascripts/invaders-client-launcher.js
 scalajs-invaders-client-fastopt.js
 scalajs-invaders-client-fastopt.js.map
 scalajs-invaders-client-launcher.js
+phaser-invaders-client-fastopt.js
+phaser-invaders-client-fastopt.js.map
+phaser-invaders-client-launcher.js

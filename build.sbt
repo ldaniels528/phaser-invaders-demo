@@ -3,9 +3,9 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 
-val appVersion = "0.1.1"
+val appVersion = "0.1.2"
 val scalaJsVersion = "2.12.1"
-val scalaJsIOVersion = "0.3.0.3"
+val scalaJsIOVersion = "0.3.0.7"
 
 val jsCommonSettings = Seq(
   organization := "com.github.ldaniels528",
@@ -16,7 +16,7 @@ val jsCommonSettings = Seq(
     "-no-link-warnings" // Suppresses problems with Scaladoc @throws links
   ),
   relativeSourceMaps := true,
-  homepage := Some(url("https://github.com/ldaniels528/invaders")),
+  homepage := Some(url("https://github.com/scalajs-io/phaser-invaders-demo")),
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-reflect" % scalaJsVersion
   ))
@@ -25,13 +25,13 @@ lazy val client = (project in file("client"))
   .enablePlugins(ScalaJSPlugin)
   .settings(jsCommonSettings: _*)
   .settings(
-    name := "scalajs-invaders-client",
+    name := "phaser-invaders-client",
     persistLauncher := true,
     persistLauncher in Test := false,
     libraryDependencies ++= Seq(
-      "io.scalajs" %%% "dom" % scalaJsIOVersion,
-      "io.scalajs" %%% "pixijs" % scalaJsIOVersion,
-      "io.scalajs" %%% "phaser" % scalaJsIOVersion
+      "io.scalajs" %%% "dom-html" % scalaJsIOVersion,
+      "io.scalajs" %%% "pixijs" % "4.3.5-3",
+      "io.scalajs" %%% "phaser" % "2.6.2-4"
     ))
 
 lazy val server = (project in file("."))
@@ -40,7 +40,7 @@ lazy val server = (project in file("."))
   .enablePlugins(ScalaJSPlugin)
   .settings(jsCommonSettings: _*)
   .settings(
-    name := "scalajs-invaders",
+    name := "phaser-invaders-demo",
     autoCompilerPlugins := true,
     scalaJSModuleKind := ModuleKind.CommonJSModule,
     Seq(packageScalaJSLauncher, fastOptJS, fullOptJS) map { packageJSKey =>
@@ -51,8 +51,8 @@ lazy val server = (project in file("."))
     ivyScala := ivyScala.value map (_.copy(overrideScalaVersion = true)),
     libraryDependencies ++= Seq(
       "io.scalajs" %%% "nodejs" % scalaJsIOVersion,
-      "io.scalajs.npm" %%% "express" % scalaJsIOVersion,
-      "io.scalajs.npm" %%% "body-parser" % scalaJsIOVersion
+      "io.scalajs.npm" %%% "express" % "4.14.1-3",
+      "io.scalajs.npm" %%% "body-parser" % "1.16.0-3"
     ))
 
 // loads the Scalajs-io root project at sbt startup
