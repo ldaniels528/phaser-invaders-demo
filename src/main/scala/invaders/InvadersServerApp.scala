@@ -44,12 +44,12 @@ object InvadersServerApp extends JSApp {
       next()
       response.onFinish(() => {
         val elapsedTime = System.currentTimeMillis() - startTime
-        println("[node] application - %s %s ~> %d [%d ms]".format(request.method, request.originalUrl, response.statusCode, elapsedTime))
+        println(s"[node] application - ${request.method} ${request.originalUrl} ~> ${response.statusCode} [$elapsedTime ms]")
       })
     })
 
     // start the listener
-    app.listen(port, () => println("Server now listening on port %d".format(port)))
+    app.listen(port, () => println(s"Server now listening on port $port"))
     ()
   }
 

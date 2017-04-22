@@ -8,7 +8,7 @@ This project is a port of [scalajs-invaders](https://github.com/adrobisch/scalaj
 
 ### Build Requirements
 
-* [SBT 0.13.13] (http://www.scala-sbt.org/download.html)
+* [SBT 0.13.15](http://www.scala-sbt.org/download.html)
 
 ### Running the application
 
